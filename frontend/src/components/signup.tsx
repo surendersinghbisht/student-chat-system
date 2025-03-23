@@ -1,9 +1,53 @@
-import { FC, memo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { FC, memo, useState } from "react";
+import { axiosInstance } from "../../api/api";
+import {toast} from "react-hot-toast";
 
 type signupProps = {};
 
-const signup: FC<signupProps> = (props) => {
+const Signup: FC<signupProps> = (props) => {
+
+const queryClient = useQueryClient();
+
+  const[formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: ""
+  });
+
+  const { mutate: signUpMutation } = useMutation({
+    mutationFn: async (data: { name: string; username: string; email: string; password: string }) => {
+        console.log("Sending data:", data);
+        const res = await axiosInstance.post("/auth/signup", data);
+        return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Account created successfully");
+      // queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+    onError: (error:any)=> {
+      console.log(error.response.data.message )
+      toast.error(error.response.data.message || "something went wrong");
+    }
+  });
+  
+  const handleChange = (e : React.ChangeEvent<HTMLInputElement>)=> {
+setFormData({
+  ...formData, 
+  [e.target.name] : e.target.value,
+})
+  }
+
+  const submitForm = (e: React.FormEvent<HTMLFormElement>)=> {
+    console.log('subit')
+    e.preventDefault();
+signUpMutation(formData);
+  }
+
   return (
+    
+      <form onSubmit={submitForm}>
     <div className="h-[100vh] items-center flex justify-center px-5 lg:px-0">
     <div className="max-w-screen-xl bg-white border shadow sm:rounded-lg flex justify-center flex-1">
       <div className="flex-1 bg-blue-900 text-center hidden md:flex">
@@ -30,23 +74,37 @@ const signup: FC<signupProps> = (props) => {
                 className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                 type="text"
                 placeholder="Enter your name"
+                value={formData.name}
+                onChange={handleChange}
+                name="name"
               />
               <input
                 className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                 type="text"
+                value={formData.username}
                 placeholder="Enter your user name"
+                onChange={handleChange}
+                name="username"
               />
               <input
                 className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                 type="email"
+                value={formData.email}
                 placeholder="Enter your email"
+                onChange={handleChange}
+                name="email"
               />
               <input
                 className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                 type="password"
+                value={formData.password}
                 placeholder="Password"
+                onChange={handleChange}
+                name="password"
               />
-              <button className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+              <button className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+              type="submit"
+              >
                 <svg
                   className="w-6 h-6 -ml-2"
                   fill="none"
@@ -73,9 +131,11 @@ const signup: FC<signupProps> = (props) => {
       </div>
     </div>
   </div>
+  </form>
+   
   )
 };
 
-signup.defaultProps = {};
+Signup.defaultProps = {};
 
-export default memo(signup);
+export default memo(Signup);
