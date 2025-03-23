@@ -32,6 +32,12 @@ const userScehma = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
+   ],
+   inGroups: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
+    }
    ]
 },{ timestamps: true });
 

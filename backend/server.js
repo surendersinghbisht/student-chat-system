@@ -3,10 +3,17 @@ import dotenv from "dotenv";
 import authRoute from "./routes/auth.route.js";
 import mongoose from "mongoose";
 import requestRoute from "./Routes/request.route.js"
+import userRoute from "./Routes/user.route.js"
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 dotenv.config();
+app.use(cors()); 
+app.use(cookieParser());
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello from backend");
 });
@@ -22,10 +29,10 @@ export const connectDB = async () => {
 };
 
 app.use("/api/auth", authRoute);
-app.use("api/request", requestRoute);
+app.use("/api/request", requestRoute);
+app.use("/api/user", userRoute);
 
-
+await connectDB();
 app.listen(5000, () => {
   console.log(`Server is running on port 5000`);
-  connectDB();
 });

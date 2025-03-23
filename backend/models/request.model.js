@@ -13,7 +13,7 @@ status: {
     enum: ["pending", "accepted", "rejected"],
     type: String,
     default: "pending",
-}
+},
 }, {timestamps: true});
 
 const request = new mongoose.model("Request", requestSchema);
