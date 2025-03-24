@@ -46,13 +46,13 @@ try {
 
 export const login = async (req, res)=> {
 try {
-    const {username, password} = req.body;
+    const {email, password} = req.body;
 
-    if(!username || !password) {
+    if(!email || !password) {
         return res.status(400).json({message: "All fields are required"})
     }
 
-    const user = await User.findOne({username});
+    const user = await User.findOne({email});
 
     if(!user) {
         res.status(400).json({message: "User does not exist"});
@@ -88,7 +88,7 @@ export const logout = async(req, res)=> {
 export const getCurrentUser = async(req, res)=> {
     try {
         const user = req.user;
-console.log(user)
+console.log('user',user)
         if(!user) {
             return res.status(400).json({message : "no user found"})
         }

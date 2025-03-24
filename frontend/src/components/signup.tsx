@@ -40,7 +40,6 @@ setFormData({
   }
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>)=> {
-    console.log('subit')
     e.preventDefault();
 signUpMutation(formData);
   }

@@ -8,20 +8,27 @@ import { IUser } from "./models/User"
 import LoginPage from "./Pages/LoginPage"
 function App() {
 
-  const {data: authUser, isLoading} = useQuery({
+  const { data: authUser, isLoading, isError, error } = useQuery({
     queryKey: ["authUser"],
-    queryFn: async () =>{
+    queryFn: async () => {
       try {
-       const res =  await axiosInstance.get("/auth/me");
-       console.log("Fetched user data:", res.data); 
-       return res.data;
-      } catch (error) {
-       console.log(error, "errror in me");
-      
+        const res = await axiosInstance.get("/auth/me");
+        console.log("Fetched user data:", res.data);
+        return res.data;
+      } catch (error: any) {
+        console.error("Error fetching user:", error?.response?.data || error);
+        throw new Error(error?.response?.data?.message || "Failed to fetch user");
       }
-    }
-  })
+    },
 
+    onError: (error: any) => {
+      console.error("useQuery Error:", error.message);
+      toast.error(error.message || "Failed to fetch user data");
+    },
+  });
+
+  if(isLoading) return null;
+  
   return (
     <div>
       <Routes>
