@@ -9,6 +9,6 @@ router.put("/:requestId/accept-request", authMiddleware, acceptRequest);
 router.put("/:requestId/delete-request", authMiddleware, deleteRequest);
 router.get("/connection-requests", authMiddleware, getConnectionRequests);
 router.post("/:userId/:groupId/send-group-request", authMiddleware, sendGroupRequest);
-router.put("/:groupRequestId/accept-reques", authMiddleware, acceptGroupRequest);
+router.put("/:groupRequestId/accept-request", authMiddleware, acceptGroupRequest);
 
 export default router;

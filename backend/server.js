@@ -6,6 +6,8 @@ import requestRoute from "./Routes/request.route.js"
 import userRoute from "./Routes/user.route.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import groupRoute from "./Routes/group.route.js"
+import friendsRoute from "./Routes/friends.route.js"
 
 const app = express();
 dotenv.config();
@@ -36,6 +38,8 @@ export const connectDB = async () => {
 app.use("/api/auth", authRoute);
 app.use("/api/request", requestRoute);
 app.use("/api/user", userRoute);
+app.use("/api/group", groupRoute);
+app.use("/api/friends", friendsRoute);
 
 await connectDB();
 app.listen(5000, () => {

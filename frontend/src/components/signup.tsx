@@ -24,7 +24,7 @@ const queryClient = useQueryClient();
     },
     onSuccess: () => {
       toast.success("Account created successfully");
-      // queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (error:any)=> {
       console.log(error.response.data.message )

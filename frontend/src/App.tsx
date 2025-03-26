@@ -1,31 +1,33 @@
-import { data, Navigate, Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
+import './App.css'
 import SignUpPage from "./Pages/SignUpPage"
 import LandingPage from "./Pages/LandingPage"
 import { useQuery } from "@tanstack/react-query"
 import {axiosInstance} from "../api/api"
 import toast, { Toaster } from "react-hot-toast"
-import { IUser } from "./models/User"
+// import { IUser } from "./models/User"
 import LoginPage from "./Pages/LoginPage"
 function App() {
 
-  const { data: authUser, isLoading, isError, error } = useQuery({
+  const { data: authUser, isLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
         const res = await axiosInstance.get("/auth/me");
-        console.log("Fetched user data:", res.data);
+        console.log("Fetched user data:", res.data); 
         return res.data;
-      } catch (error: any) {
-        console.error("Error fetching user:", error?.response?.data || error);
-        throw new Error(error?.response?.data?.message || "Failed to fetch user");
+      } catch (error) {
+        console.error("Error fetching /me:", error.response?.data);
+        if (error.response?.status === 401) {
+          return null; 
+        }
+        toast.error(error.response?.data?.message || "Something went wrong");
+        return null;
       }
     },
-
-    onError: (error: any) => {
-      console.error("useQuery Error:", error.message);
-      toast.error(error.message || "Failed to fetch user data");
-    },
   });
+
+
 
   if(isLoading) return null;
   

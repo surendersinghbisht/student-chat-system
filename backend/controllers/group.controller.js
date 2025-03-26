@@ -19,6 +19,7 @@ await group.save();
 res.status(201).json({message: "group created sucessfully"});
 
     } catch (error) {
-        
+        console.log(error, "error in group controller");
+        res.status(500).json({message: "internal server error"});
     }
 }

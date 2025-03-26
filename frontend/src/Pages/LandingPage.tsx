@@ -1,10 +1,25 @@
-import { FC, memo } from "react";
+import { FC, memo, useState } from "react";
+import { Outlet } from "react-router-dom";
+import SideBar from "../components/SideBar";
+import Navbar from "../components/NavBar";
 
 type LandingPageProps = {};
 
 const LandingPage: FC<LandingPageProps> = (props) => {
-  return <div>
-    <h1>lanfing pasge</h1>
+  interface SharedDataState {
+    directMessage: boolean;
+    groups: boolean; // Assuming 'group' is the intended property
+  }
+  
+  const[sharedData, setSharedData] = useState<SharedDataState>({
+    directMessage: false,
+    groups: false
+  })
+  return <div className="flex">
+    <SideBar setSharedData={setSharedData} />
+    <Navbar sharedData={sharedData} />
+
+    <Outlet />
   </div>
 };
 

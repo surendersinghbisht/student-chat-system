@@ -1,11 +1,31 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../../api/api";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
+  const query = useQueryClient();
+  
   const [formData, setFormData] = useState<{ email: string; password: string }>({
     email: "",
     password: "",
   });
+
+  const {mutate: submitFormMutation, isPending} = useMutation({
+  mutationFn: async(data: {email: string, password: string})=>{
+const res = await axiosInstance.post("/auth/login", data);
+return res.data;
+  },
+  onSuccess: ()=> {
+    toast.success("logged in successfully");
+     query.invalidateQueries({queryKey: ["authUser"]})
+
+  },
+  onError: (error:any)=> {
+    console.log(error.response.data.message )
+    toast.error(error.response.data.message || "something went wrong");
+  }
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFormData({
@@ -16,7 +36,8 @@ const Login = () => {
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await axiosInstance.post("/auth/login", formData);
+   submitFormMutation(formData)
+   
   };
 
   return (
@@ -68,9 +89,9 @@ const Login = () => {
                 name="password"
               />
 
-              <button type="submit" className="mt-6 w-full bg-white text-zinc-950 py-3 rounded-md hover:bg-white/90">
+              {isPending? <h1>...loading</h1>:<button type="submit" className="mt-6 w-full bg-white text-zinc-950 py-3 rounded-md hover:bg-white/90">
                 Sign in
-              </button>
+              </button>}
             </div>
           </form>
 
